@@ -17,12 +17,12 @@ class TestTextNode(unittest.TestCase):
     def test_3(self):
         node = TextNode("This is my first test", "bold", "https://www.google.com")
         node2 = TextNode("This is my first test", "italics", "https://www.google.com")
-        self.assertEqual(node, node2)
+        self.assertNotEqual(node, node2)
     
     def test_4(self):
         node = TextNode("This is not my first test", "bold", "https://www.google.com")
         node2 = TextNode("This is my first test", "italics", "https://www.google.com")
-        self.assertEqual(node, node2)
+        self.assertNotEqual(node, node2)
 
 if __name__ == "__main__":
     unittest.main()
