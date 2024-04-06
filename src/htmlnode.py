@@ -9,7 +9,7 @@ class HTMLNode:
         raise NotImplementedError
     
     def props_to_html(self):
-        if self.props is None:
+        if not self.props:
             return ""
         elif type(self.props) != dict:
             raise Exception("Props input must be a dictionary.")
@@ -39,14 +39,14 @@ class ParentNode(HTMLNode):
     
 
     def to_html(self):
-        if self.tag == None or "":
+        if not self.tag:
             raise ValueError("Invalid: no tag provided")
-        elif self.children == None or "":
+        elif not self.children:
             raise ValueError("Invalid: no children provided")
         s = ""
         for child in self.children:
             s += child.to_html()
-        return f"<{self.tag}>{s}</{self.tag}>"
+        return f"<{self.tag}{self.props_to_html()}>{s}</{self.tag}>"
             
         
         
