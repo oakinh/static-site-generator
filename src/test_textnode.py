@@ -1,7 +1,20 @@
 import unittest
 
-from textnode import TextNode, text_node_to_html_node
 from htmlnode import LeafNode
+
+from textnode import (
+    TextNode,
+    text_type_text,
+    text_type_bold,
+    text_type_italic,
+    text_type_code,
+    text_type_image,
+    text_type_link,
+    text_node_to_html_node
+)
+
+from inline_markdown import split_nodes_delimiter
+
 
 
 class TestTextNode(unittest.TestCase):
@@ -53,7 +66,6 @@ class TestTextNodetoHTMLNode(unittest.TestCase):
         self.assertEqual(leaf_node.props, {"href": "www.clickablelink.com"})
         self.assertEqual(leaf_node.tag, "a")
         self.assertEqual(leaf_node.value, "Click this link")
-
 
 
 if __name__ == "__main__":
