@@ -1,6 +1,6 @@
 import unittest
 
-from inline_markdown import split_nodes_delimiter, extract_markdown_images
+from inline_markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
 from textnode import (
     TextNode,
     text_type_text,
@@ -18,6 +18,11 @@ class TestExtractMarkDownImages(unittest.TestCase):
         expected_output = [("image", "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"), ("another", "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/dfsdkjfd.png")]
         self.assertEqual(extract_markdown_images(text), expected_output)
 
+class TestExtractMarkdownLinks(unittest.TestCase):
+    def test_links_extractions(self):
+        text = "This is text with a [link](https://www.example.com) and [another](https://www.example.com/another)"
+        expected_output = [("link", "https://www.example.com"), ("another", "https://www.example.com/another")]
+        self.assertEqual(extract_markdown_links(text), expected_output)
 
 class TestSplitNodesDelimiter(unittest.TestCase):
 
