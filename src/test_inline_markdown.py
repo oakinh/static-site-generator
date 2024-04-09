@@ -1,6 +1,6 @@
 import unittest
 
-from inline_markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
+from inline_markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image
 from textnode import (
     TextNode,
     text_type_text,
@@ -153,6 +153,33 @@ class TestSplitNodesDelimiter(unittest.TestCase):
             new_nodes,
         )
 
+
+class TestSplitNodesImage(unittest.TestCase):
+    def test_single_image(self):
+        node = TextNode("Header text before the image. ![image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png) Footer text after the image.", text_type_text)
+        new_nodes = split_nodes_image([node])
+        expected_output = [
+            TextNode("Header text before the image. ", text_type_text),
+            TextNode("image", text_type_image, "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"),
+            TextNode(" Footer text after the image.", text_type_text)
+        ]
+        self.assertEqual(new_nodes, expected_output)
+
+    def test_multiple_images(self):
+        node = TextNode(
+            "This is text with an ![image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png) and another ![second image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png)",
+            text_type_text,
+        )
+        new_nodes = split_nodes_image([node])
+        expected_output = [
+            TextNode("This is text with an ", text_type_text),
+            TextNode("image", text_type_image, "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"),
+            TextNode(" and another ", text_type_text),
+            TextNode(
+                "second image", text_type_image, "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png"
+            ),
+        ]
+        self.assertEqual(new_nodes, expected_output)
 
 if __name__ == "__main__":
     unittest.main()
