@@ -39,16 +39,26 @@ def split_nodes_image(old_nodes):
     for node in old_nodes:
         if node.text_type == text_type_text:
             images = extract_markdown_images(node.text)
-            # for image in images:
-            #     split_text = node.text.split(f"![{image[0]}]({image[1]})", 1)
-            #     new_node = [TextNode(split_text[0], text_type_text), TextNode(text=image[0][0], text_type=text_type_image, url=image[0][1]), TextNode(split_text[1], text_type_text)]
-            #     new_nodes.extend(new_node)
-            print(images)
+            unprocessed = node.text
+            for image in images:
+                split_text = unprocessed.split(f"![{image[0]}]({image[1]})", 1)
+                if split_text[0]:
+                    new_node = [TextNode(split_text[0], text_type_text), TextNode(text=image[0], text_type=text_type_image, url=image[1])]
+                    new_nodes.extend(new_node)
+                elif not split_text[0]:
+                    new_node = [TextNode(text=image[0], text_type=text_type_image, url=image[1])]
+                    new_nodes.extend(new_node)
+                unprocessed = split_text[1]
+            if unprocessed:
+                    new_nodes.append(TextNode(text=unprocessed, text_type=text_type_text))
+    print(new_nodes)
     return new_nodes
 
+# Images = [('image', 'https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png'), ('second image', 'https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png')]
+# Input/old_nodes.text = "This is text with an ![image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png) and another ![second image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png)"
 
 
-
+#def split_nodes_link(old_nodes):
 
 
 

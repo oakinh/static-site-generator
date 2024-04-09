@@ -163,6 +163,7 @@ class TestSplitNodesImage(unittest.TestCase):
             TextNode("image", text_type_image, "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"),
             TextNode(" Footer text after the image.", text_type_text)
         ]
+        self.maxDiff = None
         self.assertEqual(new_nodes, expected_output)
 
     def test_multiple_images(self):
@@ -179,7 +180,40 @@ class TestSplitNodesImage(unittest.TestCase):
                 "second image", text_type_image, "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png"
             ),
         ]
+        self.maxDiff = None
         self.assertEqual(new_nodes, expected_output)
+
+    def test_leading_image(self):
+        node = TextNode(
+            "![image](https://boot.dev) and a second ![second image](https://google.com)",
+            text_type_text,
+        )
+        expected_output = [
+            TextNode("image", text_type_image, "https://boot.dev"),
+            TextNode(" and a second ", text_type_text),
+            TextNode("second image", text_type_image, "https://google.com")
+        ]
+        self.maxDiff = None
+        self.assertEqual(expected_output, split_nodes_image([node]))
+
+    def test_large_quantity_images(self):
+        node = TextNode("![image](https://gmail.com) and another image ![second image](https://youtube.com) this is a panda ![third image](https://pandas.com) oooh look a walrus ![fourth image](https://walruses.com)", text_type_text)
+        expected_output = [
+            TextNode("image", text_type_image, "https://gmail.com"),
+            TextNode(" and another image ", text_type_text),
+            TextNode("second image", text_type_image, "https://youtube.com"),
+            TextNode(" this is a panda ", text_type_text),
+            TextNode("third image", text_type_image, "https://pandas.com"),
+            TextNode(" oooh look a walrus ", text_type_text),
+            TextNode("fourth image", text_type_image, "https://walruses.com"),
+        ]
+        self.maxDiff = None
+        self.assertEqual(expected_output, split_nodes_image([node]))
+
+    def test_no_image(self):
+        node = TextNode("This is a textnode with no images inside.", text_type_text)
+        expected_output = [TextNode("This is a textnode with no images inside.", text_type_text)]
+        self.assertEqual(expected_output, split_nodes_image([node]))
 
 if __name__ == "__main__":
     unittest.main()
