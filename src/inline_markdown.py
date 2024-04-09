@@ -51,6 +51,8 @@ def split_nodes_image(old_nodes):
                 unprocessed = split_text[1]
             if unprocessed:
                     new_nodes.append(TextNode(text=unprocessed, text_type=text_type_text))
+        else:
+            new_nodes.append(node)
     return new_nodes
 
 # Images = [('image', 'https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png'), ('second image', 'https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png')]
@@ -79,5 +81,11 @@ def split_nodes_link(old_nodes):
 
 
 def text_to_textnodes(text):
-    
+    textnode = [TextNode(text=text, text_type=text_type_text)]
+    post_split_delimiter_bold = split_nodes_delimiter(textnode, "**", text_type_bold)
+    post_split_delimiter_bold_italic = split_nodes_delimiter(post_split_delimiter_bold, "*", text_type_italic)
+    post_split_delimiter_all = split_nodes_delimiter(post_split_delimiter_bold_italic, "`", text_type_code)
+    post_delimiter_split_image = split_nodes_image(post_split_delimiter_all)
+    post_delimiter_split_image_link = split_nodes_link(post_delimiter_split_image)
+    return post_delimiter_split_image_link
 
