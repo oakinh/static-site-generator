@@ -1,4 +1,7 @@
 import re
+from textnode import TextNode, text_node_to_html_node
+from htmlnode import HTMLNode, ParentNode, LeafNode
+from inline_markdown import text_to_textnodes
 
 block_type_paragraph = "paragraph"
 block_type_heading = "heading"
@@ -57,7 +60,38 @@ def block_to_block_type(markdown_block):
         return block_type_ordered_list
     return block_type_paragraph
 
+def create_paragraph_node(markdown_block):
+    block_type = block_to_block_type(markdown_block)
+    if block_type != block_type_paragraph:
+        raise ValueError("Invalid input, not block_type_paragraph")
+    # Come back to this. How do I assign children?
+    # How do I figure out if it has children?
 
+
+def create_blockquote_node(markdown_block):
+    textnodes = text_to_textnodes(markdown_block)
+    children = []
+    for node in textnodes:
+        children.append(text_node_to_html_node(node))
+    return ParentNode(tag="blockquote", children=children)
+
+def create_ul_node(markdown_block):
+    lines = markdown_block.split("\n")
+    stripped_lines = []
+    for line in lines:
+        stripped_lines.append(line.lstrip("-+*"))
+    html_nodes = []
+    for line in lines:
+        text_nodes = text_to_textnodes(line)
+        children = []
+        for node in text_nodes:
+            children.append(text_node_to_html_node(node))
+        html_nodes.append(ParentNode(tag="li", children=children))
+    return ParentNode(tag="ul", children=html_nodes)
+
+
+
+# def markdown_to_html_node(markdown):
 
 
 

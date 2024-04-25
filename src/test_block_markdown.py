@@ -8,7 +8,11 @@ from block_markdown import (markdown_to_blocks,
                             block_type_ordered_list,
                             block_type_quote,
                             block_type_unordered_list,
+                            create_ul_node,
                             )
+from textnode import TextNode, text_node_to_html_node
+from htmlnode import HTMLNode, ParentNode, LeafNode
+from inline_markdown import text_to_textnodes
 
 
 class TestMarkdownToBlocks(unittest.TestCase):
@@ -54,6 +58,31 @@ class TestMarkdownBlockToBlockType(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             block_to_block_type(markdown_block)
         self.assertEqual("Invalid markdown, each line in an ordered list must start first with '1.' and increment by 1 thereafter", str(context.exception))
+
+class TestMarkdownToHTMLNode(unittest.TestCase):
+    def test_ul_node(self):
+        markdown_block = "- **Bold Item 1**\n- *Italic Item 2*\n- **Bold** and *Italic Item 3*"
+        actual_output = create_ul_node(markdown_block)
+        expected_output = ParentNode(
+            "ul",
+            [
+                ParentNode("li", 
+                           LeafNode("b", "Bold Item 1")
+                           ),
+                ParentNode("li", 
+                           LeafNode("i", "Italic Item 2")
+                           ),
+                ParentNode("li",
+                           [LeafNode("b", "Bold"),
+                            LeafNode(None, " and "),
+                           LeafNode("i", "Italic Item 3")
+                           ]
+                           )
+            ]
+            )
+        self.maxDiff = None
+        self.assertEqual(actual_output, expected_output)
+        
 
 
 if __name__ == "__main__":

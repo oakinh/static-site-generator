@@ -28,7 +28,7 @@ def text_node_to_html_node(text_node):
     if text_node.text_type not in (all_text_types):
         raise Exception("TextNode not a valid text-type")
     elif text_node.text_type == text_type_text:
-        return LeafNode(text_node.text)
+        return LeafNode(tag=None, value=text_node.text)
     elif text_node.text_type == text_type_bold:
         return LeafNode(tag="b", value=text_node.text)
     elif text_node.text_type == text_type_italic:
