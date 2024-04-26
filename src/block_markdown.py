@@ -79,9 +79,10 @@ def create_ul_node(markdown_block):
     lines = markdown_block.split("\n")
     stripped_lines = []
     for line in lines:
-        stripped_lines.append(line.lstrip("-+*"))
+        stripped_line = re.sub(r'^\s*[-+*]\s+', '', line)
+        stripped_lines.append(stripped_line)
     html_nodes = []
-    for line in lines:
+    for line in stripped_lines:
         text_nodes = text_to_textnodes(line)
         children = []
         for node in text_nodes:
@@ -89,6 +90,40 @@ def create_ul_node(markdown_block):
         html_nodes.append(ParentNode(tag="li", children=children))
     return ParentNode(tag="ul", children=html_nodes)
 
+def create_ol_node(markdown_block):
+    lines = markdown_block.split("\n")
+    stripped_lines = []
+    for line in lines:
+        stripped_line = re.sub(r'^\s*[0-9]\.\s+', '', line)
+        stripped_lines.append(stripped_line)
+    html_nodes = []
+    for line in stripped_lines:
+        text_nodes = text_to_textnodes(line)
+        children = []
+        for node in text_nodes:
+            children.append(text_node_to_html_node(node))
+        html_nodes.append(ParentNode(tag="li", children=children))
+    return ParentNode(tag="ol", children=html_nodes)
+
+
+def create_code_node(markdown_block):
+    processed_lines = []
+    processing = False
+    for line in markdown_block.split('\n'):
+        if not processing:
+            if "```" in line:
+                processing = True
+                if processing:
+                    new_line = line.split("```")
+                    processed_lines.append(new_line[1])
+        elif processing:
+            if "```" in line:
+                processing = False
+            else:
+                processed_lines.append(line)
+    code_block = '\n'.join(processed_lines)
+    child = LeafNode(tag="code", value=code_block)
+    return ParentNode(tag="pre", children=[child])
 
 
 # def markdown_to_html_node(markdown):

@@ -9,6 +9,7 @@ from block_markdown import (markdown_to_blocks,
                             block_type_quote,
                             block_type_unordered_list,
                             create_ul_node,
+                            create_code_node,
                             )
 from textnode import TextNode, text_node_to_html_node
 from htmlnode import HTMLNode, ParentNode, LeafNode
@@ -67,10 +68,14 @@ class TestMarkdownToHTMLNode(unittest.TestCase):
             "ul",
             [
                 ParentNode("li", 
-                           LeafNode("b", "Bold Item 1")
+                           [
+                               LeafNode("b", "Bold Item 1")
+                            ]
                            ),
                 ParentNode("li", 
-                           LeafNode("i", "Italic Item 2")
+                           [
+                               LeafNode("i", "Italic Item 2")
+                            ]
                            ),
                 ParentNode("li",
                            [LeafNode("b", "Bold"),
@@ -81,8 +86,35 @@ class TestMarkdownToHTMLNode(unittest.TestCase):
             ]
             )
         self.maxDiff = None
-        self.assertEqual(actual_output, expected_output)
+        print(f"Actual Output: {actual_output}")
+        print(f"Expected Output: {expected_output}")
+        self.assertEqual(actual_output, expected_output) 
+
+    # def test_code_node(self):
+    #     markdown_block = """
+    #                     ```
+    #                     This is a code block.
+    #                     for loop in loops:
+    #                         do.stuff()
+    #                     return fat_stuff
+    #                     ```
+    #                     """
+    #     actual_output = create_code_node(markdown_block)
+    #     expected_output = ParentNode(
+    #                         "pre",
+    #                         [
+    #                             LeafNode("code", """This is a code block.
+    #                     for loop in loops:
+    #                         do.stuff()
+    #                     return fat_stuff
+    #                     """)
+    #                         ]
+    #                     )
         
+    #     self.maxDiff = None
+    #     print(f"Actual Output: {actual_output}")
+    #     print(f"Expected_Output: {expected_output}")
+    #     self.assertEqual(actual_output, expected_output) 
 
 
 if __name__ == "__main__":
