@@ -64,12 +64,19 @@ def create_paragraph_node(markdown_block):
     block_type = block_to_block_type(markdown_block)
     if block_type != block_type_paragraph:
         raise ValueError("Invalid input, not block_type_paragraph")
+    textnodes = text_to_textnodes(markdown_block)
+    children = []
+    for node in textnodes:
+        children.append(text_node_to_html_node(node))
+    return ParentNode(tag="p", children=children)
     # Come back to this. How do I assign children?
     # How do I figure out if it has children?
 
 
 def create_blockquote_node(markdown_block):
-    textnodes = text_to_textnodes(markdown_block)
+    lines = markdown_block.split(">")
+    block = "\n".join(lines)
+    textnodes = text_to_textnodes(block)
     children = []
     for node in textnodes:
         children.append(text_node_to_html_node(node))
@@ -126,11 +133,36 @@ def create_code_node(markdown_block):
     return ParentNode(tag="pre", children=[child])
 
 
-# def markdown_to_html_node(markdown):
+def create_heading_node(markdown_block):
+    header_count = 0
+    trimmed_block = markdown_block.lstrip("# ")
+    textnodes = text_to_textnodes(trimmed_block)
+    children = []
+    for node in textnodes:
+        children.append(text_node_to_html_node(node))
+    for c in markdown_block:
+        if c == "#":
+            header_count += 1
+        else:
+            break
 
+    return ParentNode(tag=f"h{header_count}", children=children)
+        
 
-
-
-
-
-
+def markdown_to_html_node(markdown):
+    blocks = markdown_to_blocks(markdown)
+    children = []
+    for block in blocks:
+        if block_to_block_type(block) == block_type_code:
+            children.append(create_code_node(block))
+        elif block_to_block_type(block) == block_type_heading:
+            children.append(create_heading_node(block))
+        elif block_to_block_type(block) == block_type_ordered_list:
+            children.append(create_ol_node(block))
+        elif block_to_block_type(block) == block_type_unordered_list:
+            children.append(create_ul_node(block))
+        elif block_to_block_type(block) == block_type_paragraph:
+            children.append(create_paragraph_node(block))
+        elif block_to_block_type(block) == block_type_quote:
+            children.append(create_blockquote_node(block))
+    return ParentNode(tag="div", children=children)
