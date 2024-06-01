@@ -55,10 +55,6 @@ def split_nodes_image(old_nodes):
             new_nodes.append(node)
     return new_nodes
 
-# Images = [('image', 'https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png'), ('second image', 'https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png')]
-# Input/old_nodes.text = "This is text with an ![image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png) and another ![second image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png)"
-
-
 def split_nodes_link(old_nodes):
     new_nodes = []
     for node in old_nodes:
