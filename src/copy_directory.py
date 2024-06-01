@@ -11,12 +11,6 @@ def copy_directory_contents(source_directory_path, destination_directory_path):
     if not os.path.exists(source_directory_path):
         raise ValueError(f"Invalid source directory path: {source_directory_path}. Please make sure the path exists.")
     if not os.path.exists(destination_directory_path):
-        try:
-            os.mkdir(destination_directory_path)
-        except Exception as e:
-            print(f"Error: {str(e)} | Destination path did not exist, but also could not be created. Check to make sure there aren't errors in the destination_directory_path.")
-    else:
-        shutil.rmtree(destination_directory_path)
         os.mkdir(destination_directory_path)
 
     source_contents = os.listdir(source_directory_path)
